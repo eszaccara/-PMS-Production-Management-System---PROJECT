@@ -1,0 +1,51 @@
+<div class="card">
+    <div class="card-header">{{ __('Dashboard') }}</div>
+
+    <div class="card-body">
+        @if (session('status'))
+        <div class="alert alert-success" role="alert">
+            {{ session('status') }}
+        </div>
+        @endif
+        {{ __('You are logged in!') }}
+    </div>
+
+</div>
+
+
+
+_________________________________________________________________
+
+
+@foreach ($produtos as $produto)
+            {{ $produto }}<br><br>
+            @php $valorGeral = 0; @endphp
+            @foreach ($produto->mps as $mps)
+                <div class="container bg-info mt-2">
+                    ID: {{ $mps->id }} | ID_PRODUTO: {{ $mps->id_produto }} | ID_MATERIAPRIMA:
+                    {{ $mps->id_materiaprima }}
+                    | QUANTIDADE: {{ $mps->quantidade }} | UNIDADE_ID: {{ $mps->und_id }}<br>
+
+                    @if ($mps->und_id == $mps->mp_original->und_id)
+                        @php
+                            $valor = ($mps->mp_original->valor / $mps->mp_original->quantidade) * $mps->quantidade;
+                        @endphp
+                        {{ $valor }}
+                    @endif
+                    @if ($mps->und_id !== $mps->mp_original->und_id)
+                        @if ($mps->mp_original->und_id == 2)
+                            @php
+                                $valor =
+                                    ($mps->mp_original->valor / ($mps->mp_original->quantidade * 1000)) *
+                                    $mps->quantidade;
+                            @endphp
+                            {{ $mps->mp_original->valor }} / {{ $mps->mp_original->quantidade }}000 *
+                            {{ $mps->quantidade }}<br>
+                            {{ $valor }}
+                        @endif
+                    @endif
+                </div>
+                @php $valorGeral = $valorGeral + $valor; @endphp
+            @endforeach
+            {{ $valorGeral }}
+        @endforeach
